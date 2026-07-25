@@ -9,6 +9,7 @@ import { SecurityModal } from "./components/SecurityModal";
 import { UpdateModal } from "./components/UpdateModal";
 import { SettingsModal } from "./components/SettingsModal";
 import { useUpdater } from "./lib/updater";
+import { initAssets } from "./lib/assets";
 import { DEFAULT_ACCENT } from "./types";
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
   // Boot
   useEffect(() => {
     init();
+    initAssets();
   }, [init]);
 
   // Quietly check for updates a few seconds after launch, once IPC has warmed up.

@@ -54,6 +54,14 @@ marked.use({
       const raw = tokens.map((t) => ("text" in t ? (t as any).text : "")).join("");
       return `<h${depth} id="h-${slug(raw)}">${text}</h${depth}>\n`;
     },
+    // Pasted images use a notexasset: marker resolved to a real src in the preview.
+    image({ href, text }: Tokens.Image) {
+      const alt = esc(text || "");
+      if (href && href.startsWith("notexasset:")) {
+        return `<img data-notex-img="${esc(href.slice(11))}" alt="${alt}" />`;
+      }
+      return `<img src="${esc(href || "")}" alt="${alt}" />`;
+    },
   },
 });
 
@@ -126,7 +134,7 @@ marked.use({
 export function renderMarkdown(md: string): string {
   const rawHtml = marked.parse(md ?? "", { async: false }) as string;
   const clean = DOMPurify.sanitize(rawHtml, {
-    ADD_ATTR: ["target", "data-note", "data-task-index"],
+    ADD_ATTR: ["target", "data-note", "data-task-index", "data-notex-img"],
   });
   // Enable GFM task checkboxes so the preview can toggle them.
   return clean.replace(/(<input[^>]*type="checkbox"[^>]*?)\sdisabled(="")?/g, "$1");

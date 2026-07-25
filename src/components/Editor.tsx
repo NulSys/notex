@@ -41,9 +41,36 @@ import { exportNoteToFile } from "../lib/storage";
 import { notexAutocomplete } from "../lib/completions";
 import { hasMasterKey } from "../lib/crypto";
 import { formattingKeymap, wrapInline, toggleLinePrefix, insertLink } from "../lib/editor-commands";
+import { saveImage } from "../lib/assets";
 import { Preview } from "./Preview";
 import { LockedNote } from "./LockedNote";
 import { FooterClock } from "./FooterClock";
+
+// Paste an image from the clipboard: save it to the vault and insert a marker.
+const imagePaste = EditorView.domEventHandlers({
+  paste(event, view) {
+    const items = event.clipboardData?.items;
+    if (!items) return false;
+    for (const item of Array.from(items)) {
+      if (item.type.startsWith("image/")) {
+        const file = item.getAsFile();
+        if (!file) continue;
+        event.preventDefault();
+        const ext = item.type.split("/")[1] || "png";
+        file.arrayBuffer().then(async (buf) => {
+          const name = await saveImage(new Uint8Array(buf), ext);
+          if (!name) return;
+          const pos = view.state.selection.main.head;
+          const md = `![image](notexasset:${name})`;
+          view.dispatch({ changes: { from: pos, insert: md }, selection: { anchor: pos + md.length } });
+          view.focus();
+        });
+        return true;
+      }
+    }
+    return false;
+  },
+});
 
 const cmExtensions = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
@@ -51,6 +78,7 @@ const cmExtensions = [
   notexAutocomplete,
   notexEditorTheme,
   formattingKeymap,
+  imagePaste,
   search({ top: true }),
   keymap.of(searchKeymap),
 ];

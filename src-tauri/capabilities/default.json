@@ -20,6 +20,10 @@
       "allow": [{ "path": "$APPDATA/**" }, { "path": "$APPLOCALDATA/**" }, { "path": "$HOME/**" }]
     },
     {
+      "identifier": "fs:allow-write-file",
+      "allow": [{ "path": "$APPDATA/**" }, { "path": "$APPLOCALDATA/**" }]
+    },
+    {
       "identifier": "fs:allow-read-dir",
       "allow": [{ "path": "$APPDATA/**" }, { "path": "$APPLOCALDATA/**" }]
     },

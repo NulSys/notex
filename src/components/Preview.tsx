@@ -1,11 +1,21 @@
-import { useMemo, useRef, type MouseEvent } from "react";
+import { useEffect, useMemo, useRef, type MouseEvent } from "react";
 import { renderMarkdown } from "../lib/markdown";
+import { assetUrl } from "../lib/assets";
 import { isTauri } from "../lib/env";
 import { useStore } from "../store";
 
 export function Preview({ content, noteId }: { content: string; noteId?: string }) {
   const html = useMemo(() => renderMarkdown(content), [content]);
   const ref = useRef<HTMLDivElement>(null);
+
+  // Resolve pasted-image markers to real asset URLs after each render.
+  useEffect(() => {
+    ref.current?.querySelectorAll("img[data-notex-img]").forEach((el) => {
+      const img = el as HTMLImageElement;
+      const file = img.getAttribute("data-notex-img");
+      if (file) img.src = assetUrl(file);
+    });
+  }, [html]);
   const toggleTask = useStore((s) => s.toggleTask);
   const openOrCreateByTitle = useStore((s) => s.openOrCreateByTitle);
 
