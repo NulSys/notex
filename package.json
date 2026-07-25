@@ -1,7 +1,7 @@
 {
   "name": "notex",
   "private": true,
-  "version": "0.2.6",
+  "version": "0.2.7",
   "type": "module",
   "description": "NoteX — a modern, sleek markdown note-taking app",
   "scripts": {
@@ -14,8 +14,11 @@
     "release:manifest": "node scripts/gen-latest-json.mjs"
   },
   "dependencies": {
+    "@codemirror/commands": "^6.10.4",
     "@codemirror/lang-markdown": "^6.3.1",
     "@codemirror/language-data": "^6.5.1",
+    "@codemirror/search": "^6.7.1",
+    "@codemirror/state": "^6.7.1",
     "@codemirror/view": "^6.34.1",
     "@tauri-apps/api": "^2.1.1",
     "@tauri-apps/plugin-dialog": "^2.2.0",

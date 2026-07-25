@@ -914,6 +914,37 @@ button {
 .cm-host .cm-editor {
   height: 100%;
 }
+/* Markdown formatting toolbar above the editor */
+.editor-format-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+  flex: none;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.fmt-btn {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  border-radius: 6px;
+  transition: 0.14s var(--ease);
+}
+.fmt-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text-strong);
+}
+.fmt-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  margin: 0 4px;
+}
 
 /* tag editor bar under toolbar */
 .tag-bar {

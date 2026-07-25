@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { AccentId, AppData, DateFormat, EncryptedEnvelope, Folder, Note, Settings, SortMode, ThemeMode, TimeFormat, ViewMode } from "./types";
-import { FOLDER_COLORS } from "./types";
+import { FOLDER_COLORS, DEFAULT_DATE_FORMAT } from "./types";
+import { formatDate } from "./lib/time";
 import { uid } from "./lib/id";
 import { loadData, saveData, emptyData, normalizeData } from "./lib/storage";
 import { deriveTitle } from "./lib/markdown";
@@ -92,6 +93,7 @@ interface State {
   emptyTrash: () => void;
   toggleTask: (id: string, index: number) => void;
   openOrCreateByTitle: (title: string) => void;
+  openDailyNote: () => void;
   togglePin: (id: string) => void;
   toggleFavorite: (id: string) => void;
   moveNote: (id: string, folderId: string | null) => void;
@@ -312,6 +314,19 @@ export const useStore = create<State>((set, get) => {
         get().select(found.id);
       } else {
         get().createNote({ content: `# ${title.trim()}\n\n` });
+      }
+    },
+
+    openDailyNote: () => {
+      const title = formatDate(new Date(), get().settings.dateFormat ?? DEFAULT_DATE_FORMAT);
+      const target = title.toLowerCase();
+      const found = get().notes.find(
+        (n) => !n.deletedAt && !n.locked && deriveTitle(n.content).toLowerCase() === target
+      );
+      if (found) {
+        get().select(found.id);
+      } else {
+        get().createNote({ content: `# ${title}\n\n## Notes\n\n- \n\n## Tasks\n\n- [ ] ` });
       }
     },
 

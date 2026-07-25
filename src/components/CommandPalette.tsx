@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Search, FileText, Plus, SunMoon, PanelLeft, Star, CornerDownLeft, RefreshCw } from "lucide-react";
+import { Search, FileText, Plus, SunMoon, PanelLeft, Star, CornerDownLeft, RefreshCw, CalendarDays, LayoutTemplate } from "lucide-react";
 import { useStore } from "../store";
 import { useUpdater } from "../lib/updater";
 import { deriveTitle, deriveSnippet } from "../lib/markdown";
+import { TEMPLATES } from "../lib/templates";
 
 interface Item {
   key: string;
@@ -19,6 +20,7 @@ export function CommandPalette() {
   const notes = useStore((s) => s.notes);
   const select = useStore((s) => s.select);
   const createNote = useStore((s) => s.createNote);
+  const openDailyNote = useStore((s) => s.openDailyNote);
   const cycleTheme = useStore((s) => s.cycleTheme);
   const toggleSidebar = useStore((s) => s.toggleSidebar);
   const setFilter = useStore((s) => s.setFilter);
@@ -71,6 +73,22 @@ export function CommandPalette() {
         run: () => toggleSidebar(),
       },
       {
+        key: "act:daily",
+        group: "Actions",
+        title: "Open today's note",
+        sub: "Create or open a dated daily note",
+        icon: <CalendarDays size={17} />,
+        run: () => openDailyNote(),
+      },
+      ...TEMPLATES.map((t) => ({
+        key: `tpl:${t.id}`,
+        group: "Actions" as const,
+        title: `New: ${t.name}`,
+        sub: "Create a note from this template",
+        icon: <LayoutTemplate size={17} />,
+        run: () => createNote({ content: t.content() }),
+      })),
+      {
         key: "act:update",
         group: "Actions",
         title: "Check for updates",
@@ -105,7 +123,7 @@ export function CommandPalette() {
       }));
 
     return [...matchedActions, ...noteItems];
-  }, [query, notes, createNote, cycleTheme, toggleSidebar, setFilter, select]);
+  }, [query, notes, createNote, openDailyNote, cycleTheme, toggleSidebar, setFilter, select]);
 
   useEffect(() => {
     setActive((a) => Math.min(a, Math.max(0, items.length - 1)));

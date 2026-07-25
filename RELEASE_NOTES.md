@@ -1,4 +1,5 @@
-Smoother startup + polish.
+Writing tools.
 
-- **No more white flash on launch** — NoteX now waits until it's painted (in the right theme) before showing its window.
-- **Gradient in Settings** — the Settings window now carries the same accent gradient as the rest of the app.
+- **Formatting toolbar & shortcuts** — a toolbar above the editor for bold, italic, strikethrough, code, headings, lists, tasks, quotes, and links. Plus shortcuts: Ctrl+B, Ctrl+I, Ctrl+E.
+- **Find & replace** — press Ctrl+F in the editor to search, with replace and replace-all.
+- **Templates & daily notes** — from the command palette (Ctrl+K): "Open today's note" for a dated journal, and "New: …" templates for meetings, to-dos, journals, and projects.

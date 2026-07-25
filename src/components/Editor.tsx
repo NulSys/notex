@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent as ReactMouseEvent } from "react";
-import CodeMirror from "@uiw/react-codemirror";
+import CodeMirror, { type ReactCodeMirrorRef } from "@uiw/react-codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
-import { EditorView } from "@codemirror/view";
+import { EditorView, keymap } from "@codemirror/view";
+import { search, searchKeymap } from "@codemirror/search";
 import {
   Pencil,
   Columns2,
@@ -20,6 +21,16 @@ import {
   Clock,
   Lock,
   LockOpen,
+  Bold,
+  Italic,
+  Strikethrough,
+  Code,
+  Heading1,
+  Heading2,
+  List,
+  ListOrdered,
+  ListChecks,
+  Quote,
 } from "lucide-react";
 import { useStore } from "../store";
 import { notexEditorTheme } from "../lib/editor";
@@ -29,6 +40,7 @@ import { formatRelative } from "../lib/time";
 import { exportNoteToFile } from "../lib/storage";
 import { notexAutocomplete } from "../lib/completions";
 import { hasMasterKey } from "../lib/crypto";
+import { formattingKeymap, wrapInline, toggleLinePrefix, insertLink } from "../lib/editor-commands";
 import { Preview } from "./Preview";
 import { LockedNote } from "./LockedNote";
 import { FooterClock } from "./FooterClock";
@@ -38,6 +50,9 @@ const cmExtensions = [
   EditorView.lineWrapping,
   notexAutocomplete,
   notexEditorTheme,
+  formattingKeymap,
+  search({ top: true }),
+  keymap.of(searchKeymap),
 ];
 
 export function Editor() {
@@ -69,7 +84,14 @@ export function Editor() {
   const [ratio, setRatio] = useState(savedRatio);
   const [dragging, setDragging] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const cmRef = useRef<ReactCodeMirrorRef>(null);
   useEffect(() => setRatio(savedRatio), [savedRatio]);
+
+  // Run a formatting command against the live CodeMirror view.
+  const fmt = (fn: (v: EditorView) => void) => () => {
+    const view = cmRef.current?.view;
+    if (view) fn(view);
+  };
 
   const onDividerDown = (e: ReactMouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -252,8 +274,25 @@ export function Editor() {
         >
           {showEditor && (
             <div className="pane editor-pane">
+              <div className="editor-format-bar">
+                <button className="fmt-btn" onMouseDown={(e) => e.preventDefault()} onClick={fmt((v) => wrapInline(v, "**"))} title="Bold (Ctrl+B)"><Bold size={15} /></button>
+                <button className="fmt-btn" onMouseDown={(e) => e.preventDefault()} onClick={fmt((v) => wrapInline(v, "*"))} title="Italic (Ctrl+I)"><Italic size={15} /></button>
+                <button className="fmt-btn" onMouseDown={(e) => e.preventDefault()} onClick={fmt((v) => wrapInline(v, "~~"))} title="Strikethrough"><Strikethrough size={15} /></button>
+                <button className="fmt-btn" onMouseDown={(e) => e.preventDefault()} onClick={fmt((v) => wrapInline(v, "`"))} title="Inline code (Ctrl+E)"><Code size={15} /></button>
+                <span className="fmt-sep" />
+                <button className="fmt-btn" onMouseDown={(e) => e.preventDefault()} onClick={fmt((v) => toggleLinePrefix(v, "# "))} title="Heading 1"><Heading1 size={15} /></button>
+                <button className="fmt-btn" onMouseDown={(e) => e.preventDefault()} onClick={fmt((v) => toggleLinePrefix(v, "## "))} title="Heading 2"><Heading2 size={15} /></button>
+                <span className="fmt-sep" />
+                <button className="fmt-btn" onMouseDown={(e) => e.preventDefault()} onClick={fmt((v) => toggleLinePrefix(v, "- "))} title="Bulleted list"><List size={15} /></button>
+                <button className="fmt-btn" onMouseDown={(e) => e.preventDefault()} onClick={fmt((v) => toggleLinePrefix(v, "1. "))} title="Numbered list"><ListOrdered size={15} /></button>
+                <button className="fmt-btn" onMouseDown={(e) => e.preventDefault()} onClick={fmt((v) => toggleLinePrefix(v, "- [ ] "))} title="Task list"><ListChecks size={15} /></button>
+                <button className="fmt-btn" onMouseDown={(e) => e.preventDefault()} onClick={fmt((v) => toggleLinePrefix(v, "> "))} title="Quote"><Quote size={15} /></button>
+                <span className="fmt-sep" />
+                <button className="fmt-btn" onMouseDown={(e) => e.preventDefault()} onClick={fmt(insertLink)} title="Link"><Link2 size={15} /></button>
+              </div>
               <div className="cm-host">
                 <CodeMirror
+                  ref={cmRef}
                   key={note.id}
                   value={note.content}
                   onChange={(val) => updateNoteContent(note.id, val)}
