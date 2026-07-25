@@ -12,6 +12,7 @@ import {
   Hash,
   ChevronRight,
   ShieldCheck,
+  Settings2,
 } from "lucide-react";
 import { useStore, selectAllTags, selectTrashCount, type Filter } from "../store";
 import { importMarkdownFiles } from "../lib/storage";
@@ -29,6 +30,7 @@ export function Sidebar() {
   const cycleTheme = useStore((s) => s.cycleTheme);
   const createNote = useStore((s) => s.createNote);
   const openSecurity = useStore((s) => s.openSecurity);
+  const openSettings = useStore((s) => s.openSettings);
   const hasVault = useStore((s) => !!s.settings.security);
 
   const [renamingId, setRenamingId] = useState<string | null>(null);
@@ -214,6 +216,9 @@ export function Sidebar() {
         </button>
         <button className="icon-btn" onClick={onImport} title="Import markdown files">
           <Upload size={16} />
+        </button>
+        <button className="icon-btn" onClick={openSettings} title="Settings">
+          <Settings2 size={16} />
         </button>
       </div>
     </aside>

@@ -7,13 +7,16 @@ import { CommandPalette } from "./components/CommandPalette";
 import { UnlockScreen } from "./components/UnlockScreen";
 import { SecurityModal } from "./components/SecurityModal";
 import { UpdateModal } from "./components/UpdateModal";
+import { SettingsModal } from "./components/SettingsModal";
 import { useUpdater } from "./lib/updater";
+import { DEFAULT_ACCENT } from "./types";
 
 export default function App() {
   const loaded = useStore((s) => s.loaded);
   const locked = useStore((s) => s.locked);
   const init = useStore((s) => s.init);
   const theme = useStore((s) => s.settings.theme);
+  const accent = useStore((s) => s.settings.accent ?? DEFAULT_ACCENT);
   const sidebarCollapsed = useStore((s) => s.settings.sidebarCollapsed);
   const autoLockMinutes = useStore((s) => s.settings.security?.autoLockMinutes ?? 0);
   const lockSession = useStore((s) => s.lockSession);
@@ -49,6 +52,11 @@ export default function App() {
       return () => mq.removeEventListener("change", apply);
     }
   }, [theme]);
+
+  // Apply the chosen accent preset (drives every accent-derived colour in CSS).
+  useEffect(() => {
+    document.documentElement.setAttribute("data-accent", accent);
+  }, [accent]);
 
   // Global keyboard shortcuts
   useEffect(() => {
@@ -109,6 +117,7 @@ export default function App() {
       <CommandPalette />
       <SecurityModal />
       <UpdateModal />
+      <SettingsModal />
     </div>
   );
 }

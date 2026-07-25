@@ -1,5 +1,5 @@
-NoteX now updates itself.
+Personalize NoteX and get to settings faster.
 
-- **Automatic updates** — NoteX checks for new versions on launch and lets you install them in a click, with a progress bar and one-tap restart.
-- **Check for updates** — run it anytime from the command palette (Ctrl + K).
-- **Tidier tables** — Markdown tables now size to their content instead of stretching across the whole pane.
+- **Settings menu** — a new gear button in the sidebar opens Settings, with theme, accent colors, and update checks all in one place.
+- **Accent colors** — pick from 8 accents (Violet, Blue, Sky, Teal, Green, Amber, Rose, Pink). The whole app — buttons, highlights, and the background tint — matches your choice, in both light and dark mode.
+- **Check for updates** — now available right in the Settings menu (still on Ctrl + K too).

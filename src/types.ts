@@ -2,6 +2,31 @@ export type ThemeMode = "light" | "dark" | "system";
 export type ViewMode = "edit" | "split" | "preview";
 export type SortMode = "updated" | "created" | "title";
 
+export type AccentId =
+  | "violet"
+  | "blue"
+  | "sky"
+  | "teal"
+  | "green"
+  | "amber"
+  | "rose"
+  | "pink";
+
+/** Accent presets. `color` is the light-theme base swatch; the dark variant and
+ *  all soft/hover/background tints are derived from it in CSS via color-mix. */
+export const ACCENTS: { id: AccentId; label: string; color: string }[] = [
+  { id: "violet", label: "Violet", color: "#6d5efc" },
+  { id: "blue", label: "Blue", color: "#2563eb" },
+  { id: "sky", label: "Sky", color: "#0284c7" },
+  { id: "teal", label: "Teal", color: "#0d9488" },
+  { id: "green", label: "Green", color: "#16a34a" },
+  { id: "amber", label: "Amber", color: "#d97706" },
+  { id: "rose", label: "Rose", color: "#e11d48" },
+  { id: "pink", label: "Pink", color: "#db2777" },
+];
+
+export const DEFAULT_ACCENT: AccentId = "violet";
+
 export interface Note {
   id: string;
   content: string;
@@ -54,6 +79,7 @@ export interface Security {
 
 export interface Settings {
   theme: ThemeMode;
+  accent?: AccentId;
   viewMode: ViewMode;
   sort: SortMode;
   lastNoteId: string | null;

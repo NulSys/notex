@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { AppData, EncryptedEnvelope, Folder, Note, Settings, SortMode, ThemeMode, ViewMode } from "./types";
+import type { AccentId, AppData, EncryptedEnvelope, Folder, Note, Settings, SortMode, ThemeMode, ViewMode } from "./types";
 import { FOLDER_COLORS } from "./types";
 import { uid } from "./lib/id";
 import { loadData, saveData, emptyData, normalizeData } from "./lib/storage";
@@ -113,6 +113,9 @@ interface State {
   securityOpen: boolean;
   openSecurity: () => void;
   closeSecurity: () => void;
+  settingsOpen: boolean;
+  openSettings: () => void;
+  closeSettings: () => void;
 
   // security / encryption
   locked: boolean; // app-level: encrypted vault awaiting unlock
@@ -133,6 +136,7 @@ interface State {
   // settings
   setTheme: (t: ThemeMode) => void;
   cycleTheme: () => void;
+  setAccent: (a: AccentId) => void;
   setViewMode: (v: ViewMode) => void;
   setSort: (s: SortMode) => void;
   toggleSidebar: () => void;
@@ -168,6 +172,7 @@ export const useStore = create<State>((set, get) => {
     search: "",
     paletteOpen: false,
     securityOpen: false,
+    settingsOpen: false,
     locked: false,
     securityHeader: null,
 
@@ -377,6 +382,8 @@ export const useStore = create<State>((set, get) => {
     closePalette: () => set({ paletteOpen: false }),
     openSecurity: () => set({ securityOpen: true }),
     closeSecurity: () => set({ securityOpen: false }),
+    openSettings: () => set({ settingsOpen: true }),
+    closeSettings: () => set({ settingsOpen: false }),
 
     unlockVault: async (passphrase) => {
       const res = await loadData();
@@ -565,6 +572,7 @@ export const useStore = create<State>((set, get) => {
       const next = order[(order.indexOf(cur) + 1) % order.length];
       commit({ settings: { ...get().settings, theme: next } });
     },
+    setAccent: (a) => commit({ settings: { ...get().settings, accent: a } }),
     setViewMode: (v) => commit({ settings: { ...get().settings, viewMode: v } }),
     setSort: (s) => commit({ settings: { ...get().settings, sort: s } }),
     toggleSidebar: () =>
