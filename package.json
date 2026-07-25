@@ -1,0 +1,50 @@
+{
+  "name": "notex",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "NoteX — a modern, sleek markdown note-taking app",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "app": "tauri dev",
+    "app:build": "tauri build",
+    "release:manifest": "node scripts/gen-latest-json.mjs"
+  },
+  "dependencies": {
+    "@codemirror/lang-markdown": "^6.3.1",
+    "@codemirror/language-data": "^6.5.1",
+    "@codemirror/view": "^6.34.1",
+    "@tauri-apps/api": "^2.1.1",
+    "@tauri-apps/plugin-dialog": "^2.2.0",
+    "@tauri-apps/plugin-fs": "^2.2.0",
+    "@tauri-apps/plugin-opener": "^2.2.6",
+    "@tauri-apps/plugin-process": "^2.3.1",
+    "@tauri-apps/plugin-updater": "^2.10.1",
+    "@uiw/react-codemirror": "^4.23.7",
+    "dompurify": "^3.2.3",
+    "highlight.js": "^11.11.1",
+    "katex": "^0.17.0",
+    "lucide-react": "^0.469.0",
+    "marked": "^15.0.4",
+    "marked-footnote": "^1.4.0",
+    "marked-highlight": "^2.2.1",
+    "marked-katex-extension": "^5.1.10",
+    "mermaid": "^11.16.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.1.0",
+    "@types/dompurify": "^3.0.5",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "sharp": "^0.33.5",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5"
+  }
+}

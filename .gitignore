@@ -1,0 +1,26 @@
+# Dependencies
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Rust / Tauri
+src-tauri/target
+
+# Release artifacts (uploaded to GitHub Releases, not committed)
+latest.json
+
+# Updater signing keys — must NEVER be committed
+*.key
+*.key.pub
