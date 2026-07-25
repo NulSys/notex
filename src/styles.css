@@ -181,6 +181,10 @@ button {
   height: 100%;
   display: grid;
   grid-template-columns: var(--sidebar-w) var(--list-w) 1fr;
+  /* Constrain the single row to the viewport (minmax(0,...) lets the columns
+     shrink below their content so their inner panes scroll internally instead
+     of growing the whole layout and pushing the status bar off-screen). */
+  grid-template-rows: minmax(0, 1fr);
   background: var(--bg);
   background-image: var(--bg-grad);
   transition: background-color 0.4s var(--ease);

@@ -3,12 +3,11 @@ mod hello;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     // NOTE: The WebView2 flags that disable native-window occlusion detection
-    // (which otherwise pauses the compositor when the window looks occluded —
-    // killing mouse-wheel scrolling and sometimes reaping the renderer) are set
-    // via `app.windows[].additionalBrowserArgs` in tauri.conf.json. Tauri v2
-    // passes that through the WebView2 API, which takes precedence over the
-    // WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS env var, so the config is the only
-    // place that reliably applies them.
+    // (so the renderer isn't reaped/backgrounded when the window looks occluded)
+    // are set via `app.windows[].additionalBrowserArgs` in tauri.conf.json.
+    // Tauri v2 passes that through the WebView2 API, which takes precedence over
+    // the WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS env var, so the config is the
+    // only place that reliably applies them.
 
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
