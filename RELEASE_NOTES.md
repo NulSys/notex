@@ -1,3 +1,7 @@
-Images.
+Make it yours — text options.
 
-- **Paste images into notes** — paste a screenshot or copied image straight into the editor. It's saved into your vault and shown in the preview. The editor keeps a short reference instead of a giant blob of text.
+- **Font** — choose the editor & preview typeface: Sans (default), Serif, Monospace, or Rounded.
+- **Text size** — Small, Medium, Large, or Extra large.
+- **Text color** — pick from presets or choose any custom color for your note text.
+
+All in Settings → Text, applied live and remembered.

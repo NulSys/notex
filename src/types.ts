@@ -48,6 +48,37 @@ export const TIME_FORMATS: { id: TimeFormat; label: string }[] = [
 export const DEFAULT_DATE_FORMAT: DateFormat = "med";
 export const DEFAULT_TIME_FORMAT: TimeFormat = "12";
 
+export type NoteFont = "default" | "serif" | "mono" | "rounded";
+export const NOTE_FONTS: { id: NoteFont; label: string; stack: string | null }[] = [
+  { id: "default", label: "Default (Sans)", stack: null },
+  { id: "serif", label: "Serif", stack: 'Georgia, Cambria, "Times New Roman", serif' },
+  { id: "mono", label: "Monospace", stack: '"Cascadia Code", Consolas, ui-monospace, monospace' },
+  { id: "rounded", label: "Rounded", stack: '"Segoe UI Variable Display", "Nunito", "Comfortaa", system-ui, sans-serif' },
+];
+
+export type NoteSize = "s" | "m" | "l" | "xl";
+export const NOTE_SIZES: { id: NoteSize; label: string; px: string }[] = [
+  { id: "s", label: "Small", px: "14px" },
+  { id: "m", label: "Medium", px: "15.5px" },
+  { id: "l", label: "Large", px: "17.5px" },
+  { id: "xl", label: "Extra large", px: "20px" },
+];
+
+// Preset text colors for note content (null = follow the theme). Plus a custom
+// color picker in Settings for anything else.
+export const TEXT_COLORS: { id: string; label: string; color: string | null }[] = [
+  { id: "default", label: "Default", color: null },
+  { id: "slate", label: "Slate", color: "#64748b" },
+  { id: "emerald", label: "Emerald", color: "#059669" },
+  { id: "blue", label: "Blue", color: "#2563eb" },
+  { id: "amber", label: "Amber", color: "#b45309" },
+  { id: "rose", label: "Rose", color: "#e11d48" },
+  { id: "purple", label: "Purple", color: "#7c3aed" },
+];
+
+export const DEFAULT_NOTE_FONT: NoteFont = "default";
+export const DEFAULT_NOTE_SIZE: NoteSize = "m";
+
 export interface Note {
   id: string;
   content: string;
@@ -105,6 +136,10 @@ export interface Settings {
   timeFormat?: TimeFormat;
   /** Editor:preview width ratio in split view (0.2–0.8, editor's fraction). */
   splitRatio?: number;
+  /** Note content font, size, and text color (undefined = theme defaults). */
+  noteFont?: NoteFont;
+  noteSize?: NoteSize;
+  textColor?: string; // hex; absent = follow theme
   viewMode: ViewMode;
   sort: SortMode;
   lastNoteId: string | null;

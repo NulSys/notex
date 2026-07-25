@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { AccentId, AppData, DateFormat, EncryptedEnvelope, Folder, Note, Settings, SortMode, ThemeMode, TimeFormat, ViewMode } from "./types";
+import type { AccentId, AppData, DateFormat, EncryptedEnvelope, Folder, Note, NoteFont, NoteSize, Settings, SortMode, ThemeMode, TimeFormat, ViewMode } from "./types";
 import { FOLDER_COLORS, DEFAULT_DATE_FORMAT } from "./types";
 import { formatDate } from "./lib/time";
 import { uid } from "./lib/id";
@@ -142,6 +142,9 @@ interface State {
   setDateFormat: (f: DateFormat) => void;
   setTimeFormat: (f: TimeFormat) => void;
   setSplitRatio: (r: number) => void;
+  setNoteFont: (f: NoteFont) => void;
+  setNoteSize: (s: NoteSize) => void;
+  setTextColor: (c: string | undefined) => void;
   setViewMode: (v: ViewMode) => void;
   setSort: (s: SortMode) => void;
   toggleSidebar: () => void;
@@ -594,6 +597,9 @@ export const useStore = create<State>((set, get) => {
     setDateFormat: (f) => commit({ settings: { ...get().settings, dateFormat: f } }),
     setTimeFormat: (f) => commit({ settings: { ...get().settings, timeFormat: f } }),
     setSplitRatio: (r) => commit({ settings: { ...get().settings, splitRatio: r } }),
+    setNoteFont: (f) => commit({ settings: { ...get().settings, noteFont: f } }),
+    setNoteSize: (s) => commit({ settings: { ...get().settings, noteSize: s } }),
+    setTextColor: (c) => commit({ settings: { ...get().settings, textColor: c } }),
     setViewMode: (v) => commit({ settings: { ...get().settings, viewMode: v } }),
     setSort: (s) => commit({ settings: { ...get().settings, sort: s } }),
     toggleSidebar: () =>

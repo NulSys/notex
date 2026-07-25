@@ -6,13 +6,13 @@ import { tags as t } from "@lezer/highlight";
 // to both light and dark — we only flip the variables on :root.
 const baseTheme = EditorView.theme({
   "&": {
-    color: "var(--text)",
+    color: "var(--note-text, var(--text))",
     backgroundColor: "transparent",
     height: "100%",
-    fontSize: "15px",
+    fontSize: "var(--note-size, 15px)",
   },
   ".cm-scroller": {
-    fontFamily: "var(--font-editor)",
+    fontFamily: "var(--note-font, var(--font-editor))",
     lineHeight: "1.75",
     padding: "8px 4px 40vh",
     overflow: "auto",

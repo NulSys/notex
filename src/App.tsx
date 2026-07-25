@@ -10,7 +10,7 @@ import { UpdateModal } from "./components/UpdateModal";
 import { SettingsModal } from "./components/SettingsModal";
 import { useUpdater } from "./lib/updater";
 import { initAssets } from "./lib/assets";
-import { DEFAULT_ACCENT } from "./types";
+import { DEFAULT_ACCENT, NOTE_FONTS, NOTE_SIZES } from "./types";
 
 export default function App() {
   const loaded = useStore((s) => s.loaded);
@@ -18,6 +18,9 @@ export default function App() {
   const init = useStore((s) => s.init);
   const theme = useStore((s) => s.settings.theme);
   const accent = useStore((s) => s.settings.accent ?? DEFAULT_ACCENT);
+  const noteFont = useStore((s) => s.settings.noteFont);
+  const noteSize = useStore((s) => s.settings.noteSize);
+  const textColor = useStore((s) => s.settings.textColor);
   const sidebarCollapsed = useStore((s) => s.settings.sidebarCollapsed);
   const autoLockMinutes = useStore((s) => s.settings.security?.autoLockMinutes ?? 0);
   const lockSession = useStore((s) => s.lockSession);
@@ -63,6 +66,20 @@ export default function App() {
   useEffect(() => {
     document.documentElement.setAttribute("data-accent", accent);
   }, [accent]);
+
+  // Apply note text preferences (font / size / colour) as CSS variables the
+  // editor and preview read; clearing a var falls back to the theme default.
+  useEffect(() => {
+    const root = document.documentElement;
+    const stack = NOTE_FONTS.find((f) => f.id === noteFont)?.stack ?? null;
+    const px = NOTE_SIZES.find((s) => s.id === noteSize)?.px ?? null;
+    if (stack) root.style.setProperty("--note-font", stack);
+    else root.style.removeProperty("--note-font");
+    if (px) root.style.setProperty("--note-size", px);
+    else root.style.removeProperty("--note-size");
+    if (textColor) root.style.setProperty("--note-text", textColor);
+    else root.style.removeProperty("--note-text");
+  }, [noteFont, noteSize, textColor]);
 
   // Global keyboard shortcuts
   useEffect(() => {

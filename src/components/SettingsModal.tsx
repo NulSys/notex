@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Settings2, X, Sun, Moon, MonitorSmartphone, RefreshCw, Check } from "lucide-react";
+import { Settings2, X, Sun, Moon, MonitorSmartphone, RefreshCw, Check, Palette } from "lucide-react";
 import { getVersion } from "@tauri-apps/api/app";
 import { useStore } from "../store";
 import { useUpdater } from "../lib/updater";
@@ -8,12 +8,19 @@ import {
   ACCENTS,
   DATE_FORMATS,
   TIME_FORMATS,
+  NOTE_FONTS,
+  NOTE_SIZES,
+  TEXT_COLORS,
   DEFAULT_ACCENT,
   DEFAULT_DATE_FORMAT,
   DEFAULT_TIME_FORMAT,
+  DEFAULT_NOTE_FONT,
+  DEFAULT_NOTE_SIZE,
   type DateFormat,
   type TimeFormat,
   type ThemeMode,
+  type NoteFont,
+  type NoteSize,
 } from "../types";
 
 const THEMES: { id: ThemeMode; label: string; icon: typeof Sun }[] = [
@@ -33,6 +40,13 @@ export function SettingsModal() {
   const setDateFormat = useStore((s) => s.setDateFormat);
   const timeFormat = useStore((s) => s.settings.timeFormat ?? DEFAULT_TIME_FORMAT);
   const setTimeFormat = useStore((s) => s.setTimeFormat);
+  const noteFont = useStore((s) => s.settings.noteFont ?? DEFAULT_NOTE_FONT);
+  const setNoteFont = useStore((s) => s.setNoteFont);
+  const noteSize = useStore((s) => s.settings.noteSize ?? DEFAULT_NOTE_SIZE);
+  const setNoteSize = useStore((s) => s.setNoteSize);
+  const textColor = useStore((s) => s.settings.textColor);
+  const setTextColor = useStore((s) => s.setTextColor);
+  const isPresetColor = TEXT_COLORS.some((c) => c.color === (textColor ?? null));
 
   const runCheck = useUpdater((s) => s.runCheck);
   const updateStatus = useUpdater((s) => s.status);
@@ -91,6 +105,66 @@ export function SettingsModal() {
                   {accent === a.id && <Check size={16} />}
                 </button>
               ))}
+            </div>
+          </div>
+
+          <div className="settings-section">
+            <div className="settings-label">Text</div>
+            <label className="row-toggle">
+              <div>
+                <b>Font</b>
+                <small>Editor &amp; preview typeface</small>
+              </div>
+              <select value={noteFont} onChange={(e) => setNoteFont(e.target.value as NoteFont)}>
+                {NOTE_FONTS.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="row-toggle">
+              <div>
+                <b>Text size</b>
+                <small>Size of note text</small>
+              </div>
+              <select value={noteSize} onChange={(e) => setNoteSize(e.target.value as NoteSize)}>
+                {NOTE_SIZES.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="settings-sub-label">Text color</div>
+            <div className="accent-grid">
+              {TEXT_COLORS.map((c) => {
+                const active = (textColor ?? null) === c.color;
+                return (
+                  <button
+                    key={c.id}
+                    className={`accent-swatch${active ? " active" : ""}`}
+                    style={{ ["--sw" as any]: c.color ?? "var(--text)" }}
+                    onClick={() => setTextColor(c.color ?? undefined)}
+                    title={c.label}
+                    aria-label={c.label}
+                  >
+                    {active && <Check size={16} />}
+                  </button>
+                );
+              })}
+              <label
+                className={`accent-swatch custom-swatch${!isPresetColor && textColor ? " active" : ""}`}
+                style={{ ["--sw" as any]: textColor && !isPresetColor ? textColor : "var(--surface-hover)" }}
+                title="Custom color"
+              >
+                <Palette size={14} />
+                <input
+                  type="color"
+                  value={textColor && !isPresetColor ? textColor : "#3b82f6"}
+                  onChange={(e) => setTextColor(e.target.value)}
+                />
+              </label>
             </div>
           </div>
 
