@@ -2,21 +2,13 @@ mod hello;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    // Prevent WebView2 from freezing/reaping the renderer when the window is
-    // occluded (e.g. behind another window) or backgrounded — which otherwise
-    // closes the window shortly after launch.
-    #[cfg(windows)]
-    {
-        let existing = std::env::var("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS").unwrap_or_default();
-        let flags = "--disable-features=CalculateNativeWinOcclusion \
-                     --disable-backgrounding-occluded-windows \
-                     --disable-renderer-backgrounding \
-                     --disable-background-timer-throttling";
-        std::env::set_var(
-            "WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
-            format!("{existing} {flags}").trim(),
-        );
-    }
+    // NOTE: The WebView2 flags that disable native-window occlusion detection
+    // (which otherwise pauses the compositor when the window looks occluded —
+    // killing mouse-wheel scrolling and sometimes reaping the renderer) are set
+    // via `app.windows[].additionalBrowserArgs` in tauri.conf.json. Tauri v2
+    // passes that through the WebView2 API, which takes precedence over the
+    // WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS env var, so the config is the only
+    // place that reliably applies them.
 
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())

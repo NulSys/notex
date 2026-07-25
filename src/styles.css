@@ -456,6 +456,10 @@ button {
 }
 .list-controls .search-box {
   flex: 1;
+  min-width: 0;
+}
+.sort-menu {
+  flex: none;
 }
 .sort-menu {
   display: flex;

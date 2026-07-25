@@ -1,5 +1,4 @@
-Personalize NoteX and get to settings faster.
+Fixes for scrolling and layout.
 
-- **Settings menu** — a new gear button in the sidebar opens Settings, with theme, accent colors, and update checks all in one place.
-- **Accent colors** — pick from 8 accents (Violet, Blue, Sky, Teal, Green, Amber, Rose, Pink). The whole app — buttons, highlights, and the background tint — matches your choice, in both light and dark mode.
-- **Check for updates** — now available right in the Settings menu (still on Ctrl + K too).
+- **Mouse-wheel scrolling fixed** — resolved a WebView2 issue where the window's occlusion detection paused the compositor, so the mouse wheel didn't scroll notes (the scrollbar still worked). Wheel scrolling now works throughout the app.
+- **Sort control** — the "Last edited" sort dropdown no longer gets clipped in the notes list.
