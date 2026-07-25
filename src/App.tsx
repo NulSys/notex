@@ -45,6 +45,10 @@ export default function App() {
     const apply = () => {
       const resolved = theme === "system" ? (mq.matches ? "dark" : "light") : theme;
       document.documentElement.setAttribute("data-theme", resolved);
+      // Remember it so the next launch can apply it before first paint.
+      try {
+        localStorage.setItem("notex-resolved-theme", resolved);
+      } catch {}
     };
     apply();
     if (theme === "system") {

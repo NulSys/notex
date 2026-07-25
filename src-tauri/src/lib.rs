@@ -1,5 +1,7 @@
 mod hello;
 
+use tauri::Manager;
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     // NOTE: The WebView2 flags that disable native-window occlusion detection
@@ -17,6 +19,22 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         // Remembers window size/position/maximized across launches.
         .plugin(tauri_plugin_window_state::Builder::default().build())
+        .setup(|app| {
+            // The window starts hidden (visible:false) so the frontend can reveal
+            // it after first paint, avoiding a white flash. This is a safety net:
+            // if the frontend never calls show() (e.g. a load error), force the
+            // window visible after a short delay so it can never stay hidden.
+            let handle = app.handle().clone();
+            std::thread::spawn(move || {
+                std::thread::sleep(std::time::Duration::from_millis(1500));
+                if let Some(w) = handle.get_webview_window("main") {
+                    if !w.is_visible().unwrap_or(true) {
+                        let _ = w.show();
+                    }
+                }
+            });
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             hello::hello_available,
             hello::hello_protect,

@@ -1863,6 +1863,19 @@ button {
 /* settings window */
 .settings-modal {
   max-width: 440px;
+  /* Accent gradient to match the app background. */
+  background:
+    radial-gradient(
+      720px 400px at 100% 0%,
+      color-mix(in srgb, var(--accent) 24%, var(--elevated)) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      620px 380px at 0% 100%,
+      color-mix(in srgb, var(--accent) 15%, var(--elevated)) 0%,
+      transparent 60%
+    ),
+    var(--elevated);
 }
 .settings-section {
   margin-bottom: 22px;

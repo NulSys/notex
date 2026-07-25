@@ -1,5 +1,4 @@
-Personalization + layout.
+Smoother startup + polish.
 
-- **Accent gradient background** — a subtle gradient using your accent color now spans the whole window, in both light and dark themes.
-- **Remembers your window** — NoteX reopens at the size, position, and maximized state you left it in.
-- **Resizable split view** — drag the divider between the editor and preview to set your preferred balance; it's remembered.
+- **No more white flash on launch** — NoteX now waits until it's painted (in the right theme) before showing its window.
+- **Gradient in Settings** — the Settings window now carries the same accent gradient as the rest of the app.

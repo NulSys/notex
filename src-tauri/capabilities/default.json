@@ -10,6 +10,7 @@
     "fs:default",
     "updater:default",
     "process:default",
+    "core:window:allow-show",
     {
       "identifier": "fs:allow-read-text-file",
       "allow": [{ "path": "$APPDATA/**" }, { "path": "$APPLOCALDATA/**" }, { "path": "$HOME/**" }]
