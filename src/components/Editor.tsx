@@ -1,4 +1,4 @@
-import { useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent as ReactMouseEvent } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
@@ -58,8 +58,43 @@ export function Editor() {
   const provideKey = useStore((s) => s.provideKey);
   const openSecurity = useStore((s) => s.openSecurity);
 
+  const savedRatio = useStore((s) => s.settings.splitRatio ?? 0.5);
+  const setSplitRatio = useStore((s) => s.setSplitRatio);
+
   const [tagInput, setTagInput] = useState("");
   const [showInfo, setShowInfo] = useState(false);
+
+  // Live split ratio (editor's fraction). Local during drag for smoothness;
+  // committed to settings on release. Kept in sync with the persisted value.
+  const [ratio, setRatio] = useState(savedRatio);
+  const [dragging, setDragging] = useState(false);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  useEffect(() => setRatio(savedRatio), [savedRatio]);
+
+  const onDividerDown = (e: ReactMouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const container = bodyRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    setDragging(true);
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    let last = ratio;
+    const onMove = (ev: MouseEvent) => {
+      last = Math.min(0.8, Math.max(0.2, (ev.clientX - rect.left) / rect.width));
+      setRatio(last);
+    };
+    const onUp = () => {
+      setDragging(false);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      setSplitRatio(last); // persist final position
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
 
   if (!note) {
     return (
@@ -206,7 +241,15 @@ export function Editor() {
         <LockedNote noteId={note.id} />
       ) : (
       <div className="editor-main">
-        <div className={`editor-body ${viewMode === "split" ? "split" : "single"}`}>
+        <div
+          ref={bodyRef}
+          className={`editor-body ${viewMode === "split" ? "split" : "single"}`}
+          style={
+            viewMode === "split"
+              ? { gridTemplateColumns: `minmax(0, ${ratio}fr) 6px minmax(0, ${1 - ratio}fr)` }
+              : undefined
+          }
+        >
           {showEditor && (
             <div className="pane editor-pane">
               <div className="cm-host">
@@ -229,6 +272,13 @@ export function Editor() {
                 />
               </div>
             </div>
+          )}
+          {viewMode === "split" && (
+            <div
+              className={`split-divider${dragging ? " dragging" : ""}`}
+              onMouseDown={onDividerDown}
+              title="Drag to resize"
+            />
           )}
           {showPreview && (
             <div className="pane preview-pane">

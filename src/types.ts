@@ -103,6 +103,8 @@ export interface Settings {
   accent?: AccentId;
   dateFormat?: DateFormat;
   timeFormat?: TimeFormat;
+  /** Editor:preview width ratio in split view (0.2–0.8, editor's fraction). */
+  splitRatio?: number;
   viewMode: ViewMode;
   sort: SortMode;
   lastNoteId: string | null;

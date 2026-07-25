@@ -37,11 +37,26 @@
 :root[data-theme="light"] {
   color-scheme: light;
   --bg: #f4f5f8;
-  --bg-grad: radial-gradient(
-    1200px 600px at 100% -10%,
-    color-mix(in srgb, var(--accent) 15%, var(--bg)) 0%,
-    transparent 55%
-  );
+  /* A single accent wash spanning the whole window: two large overlapping
+     glows (top-right + bottom-left) that meet in the middle for continuous
+     coverage, over a faint diagonal accent tint. */
+  --bg-grad:
+    radial-gradient(
+      1500px 1100px at 108% -8%,
+      color-mix(in srgb, var(--accent) 58%, var(--bg)) 0%,
+      transparent 66%
+    ),
+    radial-gradient(
+      1400px 1050px at -12% 112%,
+      color-mix(in srgb, var(--accent) 42%, var(--bg)) 0%,
+      transparent 64%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent) 34%, var(--bg)) 0%,
+      color-mix(in srgb, var(--accent) 18%, var(--bg)) 50%,
+      color-mix(in srgb, var(--accent) 30%, var(--bg)) 100%
+    );
   --surface: #ffffff;
   --surface-2: #fbfbfd;
   --surface-hover: #f1f2f6;
@@ -82,11 +97,23 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg: #0b0c11;
-  --bg-grad: radial-gradient(
-    1200px 600px at 100% -10%,
-    color-mix(in srgb, var(--accent) 22%, var(--bg)) 0%,
-    transparent 55%
-  );
+  --bg-grad:
+    radial-gradient(
+      1500px 1100px at 108% -8%,
+      color-mix(in srgb, var(--accent) 82%, var(--bg)) 0%,
+      transparent 68%
+    ),
+    radial-gradient(
+      1400px 1050px at -12% 112%,
+      color-mix(in srgb, var(--accent) 60%, var(--bg)) 0%,
+      transparent 66%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent) 52%, var(--bg)) 0%,
+      color-mix(in srgb, var(--accent) 32%, var(--bg)) 50%,
+      color-mix(in srgb, var(--accent) 46%, var(--bg)) 100%
+    );
   --surface: #14161e;
   --surface-2: #10121a;
   --surface-hover: #1c1f2a;
@@ -205,6 +232,9 @@ button {
   padding: 12px 10px;
   gap: 4px;
   user-select: none;
+  /* Translucent surface so the sidebar shows the gradient at the SAME strength
+     as the other panels instead of the full, overpowering wash. */
+  background: color-mix(in srgb, var(--surface-2) 58%, transparent);
 }
 .brand {
   display: flex;
@@ -393,7 +423,8 @@ button {
   flex-direction: column;
   min-width: 0;
   border-right: 1px solid var(--border);
-  background: var(--surface-2);
+  /* Translucent so the app's accent gradient shows through. */
+  background: color-mix(in srgb, var(--surface-2) 58%, transparent);
 }
 .list-header {
   padding: 14px 16px 10px;
@@ -621,7 +652,8 @@ button {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: var(--surface);
+  /* Kept a bit more opaque than the side panels to preserve text contrast. */
+  background: color-mix(in srgb, var(--surface) 68%, transparent);
 }
 .toolbar {
   display: flex;
@@ -851,8 +883,28 @@ button {
 .pane.editor-pane {
   border-right: 1px solid var(--border);
 }
-.editor-body.single .pane.editor-pane {
+.editor-body.single .pane.editor-pane,
+.editor-body.split .pane.editor-pane {
   border-right: none;
+}
+/* Draggable divider between editor and preview in split view. */
+.split-divider {
+  cursor: col-resize;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  touch-action: none;
+}
+.split-divider::before {
+  content: "";
+  width: 1px;
+  background: var(--border);
+  transition: width 0.12s var(--ease), background 0.12s var(--ease);
+}
+.split-divider:hover::before,
+.split-divider.dragging::before {
+  width: 3px;
+  background: var(--accent);
 }
 .cm-host {
   flex: 1;

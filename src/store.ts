@@ -139,6 +139,7 @@ interface State {
   setAccent: (a: AccentId) => void;
   setDateFormat: (f: DateFormat) => void;
   setTimeFormat: (f: TimeFormat) => void;
+  setSplitRatio: (r: number) => void;
   setViewMode: (v: ViewMode) => void;
   setSort: (s: SortMode) => void;
   toggleSidebar: () => void;
@@ -577,6 +578,7 @@ export const useStore = create<State>((set, get) => {
     setAccent: (a) => commit({ settings: { ...get().settings, accent: a } }),
     setDateFormat: (f) => commit({ settings: { ...get().settings, dateFormat: f } }),
     setTimeFormat: (f) => commit({ settings: { ...get().settings, timeFormat: f } }),
+    setSplitRatio: (r) => commit({ settings: { ...get().settings, splitRatio: r } }),
     setViewMode: (v) => commit({ settings: { ...get().settings, viewMode: v } }),
     setSort: (s) => commit({ settings: { ...get().settings, sort: s } }),
     toggleSidebar: () =>

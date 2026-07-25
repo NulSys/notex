@@ -1,5 +1,5 @@
-Clock in the footer + fixes.
+Personalization + layout.
 
-- **Date & time in the footer** — the editor footer now shows the current date and time.
-- **Format settings** — choose your preferred date format and time format (12/24-hour, with or without seconds) in Settings → Date & time.
-- **Update window fix** — "Check for updates" now opens on top of the Settings window instead of behind it.
+- **Accent gradient background** — a subtle gradient using your accent color now spans the whole window, in both light and dark themes.
+- **Remembers your window** — NoteX reopens at the size, position, and maximized state you left it in.
+- **Resizable split view** — drag the divider between the editor and preview to set your preferred balance; it's remembered.
