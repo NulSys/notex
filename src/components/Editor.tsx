@@ -31,6 +31,7 @@ import { notexAutocomplete } from "../lib/completions";
 import { hasMasterKey } from "../lib/crypto";
 import { Preview } from "./Preview";
 import { LockedNote } from "./LockedNote";
+import { FooterClock } from "./FooterClock";
 
 const cmExtensions = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
@@ -307,6 +308,8 @@ export function Editor() {
         <span className="dot" />
         <span>Edited {formatRelative(note.updatedAt)}</span>
         <div style={{ flex: 1 }} />
+        <FooterClock />
+        <span className="dot" />
         <span style={{ opacity: 0.7 }}>Autosaved</span>
       </div>
     </section>

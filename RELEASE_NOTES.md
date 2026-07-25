@@ -1,3 +1,5 @@
-Scrolling fix.
+Clock in the footer + fixes.
 
-- **Fixed scrolling on longer notes** — opening a long note no longer stretches the layout off-screen. The mouse wheel now scrolls notes properly, and the status bar stays put at the bottom.
+- **Date & time in the footer** — the editor footer now shows the current date and time.
+- **Format settings** — choose your preferred date format and time format (12/24-hour, with or without seconds) in Settings → Date & time.
+- **Update window fix** — "Check for updates" now opens on top of the Settings window instead of behind it.

@@ -27,6 +27,27 @@ export const ACCENTS: { id: AccentId; label: string; color: string }[] = [
 
 export const DEFAULT_ACCENT: AccentId = "violet";
 
+export type DateFormat = "med" | "long" | "us" | "eu" | "iso";
+export type TimeFormat = "12" | "12s" | "24" | "24s";
+
+export const DATE_FORMATS: { id: DateFormat; label: string }[] = [
+  { id: "med", label: "Jul 25, 2026" },
+  { id: "long", label: "Saturday, July 25, 2026" },
+  { id: "us", label: "7/25/2026" },
+  { id: "eu", label: "25/07/2026" },
+  { id: "iso", label: "2026-07-25" },
+];
+
+export const TIME_FORMATS: { id: TimeFormat; label: string }[] = [
+  { id: "12", label: "3:45 PM" },
+  { id: "12s", label: "3:45:09 PM" },
+  { id: "24", label: "15:45" },
+  { id: "24s", label: "15:45:09" },
+];
+
+export const DEFAULT_DATE_FORMAT: DateFormat = "med";
+export const DEFAULT_TIME_FORMAT: TimeFormat = "12";
+
 export interface Note {
   id: string;
   content: string;
@@ -80,6 +101,8 @@ export interface Security {
 export interface Settings {
   theme: ThemeMode;
   accent?: AccentId;
+  dateFormat?: DateFormat;
+  timeFormat?: TimeFormat;
   viewMode: ViewMode;
   sort: SortMode;
   lastNoteId: string | null;

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { AccentId, AppData, EncryptedEnvelope, Folder, Note, Settings, SortMode, ThemeMode, ViewMode } from "./types";
+import type { AccentId, AppData, DateFormat, EncryptedEnvelope, Folder, Note, Settings, SortMode, ThemeMode, TimeFormat, ViewMode } from "./types";
 import { FOLDER_COLORS } from "./types";
 import { uid } from "./lib/id";
 import { loadData, saveData, emptyData, normalizeData } from "./lib/storage";
@@ -137,6 +137,8 @@ interface State {
   setTheme: (t: ThemeMode) => void;
   cycleTheme: () => void;
   setAccent: (a: AccentId) => void;
+  setDateFormat: (f: DateFormat) => void;
+  setTimeFormat: (f: TimeFormat) => void;
   setViewMode: (v: ViewMode) => void;
   setSort: (s: SortMode) => void;
   toggleSidebar: () => void;
@@ -573,6 +575,8 @@ export const useStore = create<State>((set, get) => {
       commit({ settings: { ...get().settings, theme: next } });
     },
     setAccent: (a) => commit({ settings: { ...get().settings, accent: a } }),
+    setDateFormat: (f) => commit({ settings: { ...get().settings, dateFormat: f } }),
+    setTimeFormat: (f) => commit({ settings: { ...get().settings, timeFormat: f } }),
     setViewMode: (v) => commit({ settings: { ...get().settings, viewMode: v } }),
     setSort: (s) => commit({ settings: { ...get().settings, sort: s } }),
     toggleSidebar: () =>

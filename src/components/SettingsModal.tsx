@@ -3,7 +3,18 @@ import { Settings2, X, Sun, Moon, MonitorSmartphone, RefreshCw, Check } from "lu
 import { getVersion } from "@tauri-apps/api/app";
 import { useStore } from "../store";
 import { useUpdater } from "../lib/updater";
-import { ACCENTS, DEFAULT_ACCENT, type ThemeMode } from "../types";
+import { formatDate, formatTime } from "../lib/time";
+import {
+  ACCENTS,
+  DATE_FORMATS,
+  TIME_FORMATS,
+  DEFAULT_ACCENT,
+  DEFAULT_DATE_FORMAT,
+  DEFAULT_TIME_FORMAT,
+  type DateFormat,
+  type TimeFormat,
+  type ThemeMode,
+} from "../types";
 
 const THEMES: { id: ThemeMode; label: string; icon: typeof Sun }[] = [
   { id: "light", label: "Light", icon: Sun },
@@ -18,6 +29,10 @@ export function SettingsModal() {
   const setTheme = useStore((s) => s.setTheme);
   const accent = useStore((s) => s.settings.accent ?? DEFAULT_ACCENT);
   const setAccent = useStore((s) => s.setAccent);
+  const dateFormat = useStore((s) => s.settings.dateFormat ?? DEFAULT_DATE_FORMAT);
+  const setDateFormat = useStore((s) => s.setDateFormat);
+  const timeFormat = useStore((s) => s.settings.timeFormat ?? DEFAULT_TIME_FORMAT);
+  const setTimeFormat = useStore((s) => s.setTimeFormat);
 
   const runCheck = useUpdater((s) => s.runCheck);
   const updateStatus = useUpdater((s) => s.status);
@@ -77,6 +92,42 @@ export function SettingsModal() {
                 </button>
               ))}
             </div>
+          </div>
+
+          <div className="settings-section">
+            <div className="settings-label">Date &amp; time</div>
+            <label className="row-toggle">
+              <div>
+                <b>Date format</b>
+                <small>{formatDate(new Date(), dateFormat)}</small>
+              </div>
+              <select
+                value={dateFormat}
+                onChange={(e) => setDateFormat(e.target.value as DateFormat)}
+              >
+                {DATE_FORMATS.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="row-toggle">
+              <div>
+                <b>Time format</b>
+                <small>{formatTime(new Date(), timeFormat)}</small>
+              </div>
+              <select
+                value={timeFormat}
+                onChange={(e) => setTimeFormat(e.target.value as TimeFormat)}
+              >
+                {TIME_FORMATS.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.label}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
 
           <div className="settings-section">

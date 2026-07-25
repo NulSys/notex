@@ -1298,6 +1298,10 @@ button {
   z-index: 100;
   animation: overlay-in 0.16s var(--ease);
 }
+/* Sits above other modals (e.g. the update window opened from Settings). */
+.overlay.overlay-top {
+  z-index: 200;
+}
 @keyframes overlay-in {
   from {
     opacity: 0;
@@ -1437,6 +1441,12 @@ button {
   height: 4px;
   border-radius: 50%;
   background: var(--text-faint);
+}
+.footer-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-variant-numeric: tabular-nums; /* keep width steady as the time ticks */
 }
 .saved-flash {
   color: var(--accent);

@@ -52,7 +52,7 @@ export function UpdateModal() {
   if (!open) return null;
 
   return (
-    <div className="overlay" onMouseDown={close}>
+    <div className="overlay overlay-top" onMouseDown={close}>
       <div className="modal update-modal" onMouseDown={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <div className="modal-title">
