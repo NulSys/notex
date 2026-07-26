@@ -1,4 +1,4 @@
-Accent-colored app icon.
+Custom accents + tidier settings.
 
-- **The taskbar & window icon now match your accent** — change the accent in Settings and the running app's icon re-tints to match, live.
-- Note: the installer/pinned-shortcut icon (shown before the app launches) stays the default color — that one is fixed at build time.
+- **Custom accent color** — pick any color for your accent (the palette swatch in Settings → Accent color), not just the presets. The whole app (and the background gradient) follows it.
+- **Sticky Settings header** — the header stays pinned while you scroll the Settings window.

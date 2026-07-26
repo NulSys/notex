@@ -20,6 +20,7 @@ export default function App() {
   const init = useStore((s) => s.init);
   const theme = useStore((s) => s.settings.theme);
   const accent = useStore((s) => s.settings.accent ?? DEFAULT_ACCENT);
+  const customAccent = useStore((s) => s.settings.customAccent);
   const noteFont = useStore((s) => s.settings.noteFont);
   const noteSize = useStore((s) => s.settings.noteSize);
   const textColor = useStore((s) => s.settings.textColor);
@@ -64,13 +65,22 @@ export default function App() {
     }
   }, [theme]);
 
-  // Apply the chosen accent preset (drives every accent-derived colour in CSS).
+  // Apply the accent — a preset, or a custom hex that overrides it.
   useEffect(() => {
-    document.documentElement.setAttribute("data-accent", accent);
-    // Re-tint the running window/taskbar icon to match the accent.
-    const color = ACCENTS.find((a) => a.id === accent)?.color;
+    const root = document.documentElement;
+    if (customAccent) {
+      // Inline --accent-base wins over the preset's [data-accent] rule; every
+      // accent-derived colour (via color-mix) recomputes from it.
+      root.style.setProperty("--accent-base", customAccent);
+      root.setAttribute("data-accent", "custom");
+    } else {
+      root.style.removeProperty("--accent-base");
+      root.setAttribute("data-accent", accent);
+    }
+    // Re-tint the running window/taskbar icon to match.
+    const color = customAccent ?? ACCENTS.find((a) => a.id === accent)?.color;
     if (color) applyAccentIcon(color);
-  }, [accent]);
+  }, [accent, customAccent]);
 
   // Apply note text preferences (font / size / colour) as CSS variables the
   // editor and preview read; clearing a var falls back to the theme default.

@@ -43,6 +43,8 @@ export function SettingsModal() {
   const setTheme = useStore((s) => s.setTheme);
   const accent = useStore((s) => s.settings.accent ?? DEFAULT_ACCENT);
   const setAccent = useStore((s) => s.setAccent);
+  const customAccent = useStore((s) => s.settings.customAccent);
+  const setCustomAccent = useStore((s) => s.setCustomAccent);
   const dateFormat = useStore((s) => s.settings.dateFormat ?? DEFAULT_DATE_FORMAT);
   const setDateFormat = useStore((s) => s.setDateFormat);
   const timeFormat = useStore((s) => s.settings.timeFormat ?? DEFAULT_TIME_FORMAT);
@@ -114,18 +116,33 @@ export function SettingsModal() {
           <div className="settings-section">
             <div className="settings-label">Accent color</div>
             <div className="accent-grid">
-              {ACCENTS.map((a) => (
-                <button
-                  key={a.id}
-                  className={`accent-swatch${accent === a.id ? " active" : ""}`}
-                  style={{ ["--sw" as any]: a.color }}
-                  onClick={() => setAccent(a.id)}
-                  title={a.label}
-                  aria-label={a.label}
-                >
-                  {accent === a.id && <Check size={16} />}
-                </button>
-              ))}
+              {ACCENTS.map((a) => {
+                const active = !customAccent && accent === a.id;
+                return (
+                  <button
+                    key={a.id}
+                    className={`accent-swatch${active ? " active" : ""}`}
+                    style={{ ["--sw" as any]: a.color }}
+                    onClick={() => setAccent(a.id)}
+                    title={a.label}
+                    aria-label={a.label}
+                  >
+                    {active && <Check size={16} />}
+                  </button>
+                );
+              })}
+              <label
+                className={`accent-swatch custom-swatch${customAccent ? " active" : ""}`}
+                style={{ ["--sw" as any]: customAccent || "var(--surface-hover)" }}
+                title="Custom accent color"
+              >
+                <Palette size={14} />
+                <input
+                  type="color"
+                  value={customAccent || "#6d5efc"}
+                  onChange={(e) => setCustomAccent(e.target.value)}
+                />
+              </label>
             </div>
           </div>
 

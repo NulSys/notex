@@ -151,6 +151,7 @@ export interface Security {
 export interface Settings {
   theme: ThemeMode;
   accent?: AccentId;
+  customAccent?: string; // hex; when set, overrides the preset accent
   dateFormat?: DateFormat;
   timeFormat?: TimeFormat;
   /** Editor:preview width ratio in split view (0.2–0.8, editor's fraction). */

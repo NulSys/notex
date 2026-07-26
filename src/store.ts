@@ -142,6 +142,7 @@ interface State {
   setTheme: (t: ThemeMode) => void;
   cycleTheme: () => void;
   setAccent: (a: AccentId) => void;
+  setCustomAccent: (c: string | undefined) => void;
   setDateFormat: (f: DateFormat) => void;
   setTimeFormat: (f: TimeFormat) => void;
   setSplitRatio: (r: number) => void;
@@ -606,7 +607,8 @@ export const useStore = create<State>((set, get) => {
       const next = order[(order.indexOf(cur) + 1) % order.length];
       commit({ settings: { ...get().settings, theme: next } });
     },
-    setAccent: (a) => commit({ settings: { ...get().settings, accent: a } }),
+    setAccent: (a) => commit({ settings: { ...get().settings, accent: a, customAccent: undefined } }),
+    setCustomAccent: (c) => commit({ settings: { ...get().settings, customAccent: c } }),
     setDateFormat: (f) => commit({ settings: { ...get().settings, dateFormat: f } }),
     setTimeFormat: (f) => commit({ settings: { ...get().settings, timeFormat: f } }),
     setSplitRatio: (r) => commit({ settings: { ...get().settings, splitRatio: r } }),
