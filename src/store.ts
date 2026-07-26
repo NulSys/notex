@@ -118,6 +118,9 @@ interface State {
   settingsOpen: boolean;
   openSettings: () => void;
   closeSettings: () => void;
+  aiOpen: boolean;
+  openAi: () => void;
+  closeAi: () => void;
 
   // security / encryption
   locked: boolean; // app-level: encrypted vault awaiting unlock
@@ -145,6 +148,8 @@ interface State {
   setNoteFont: (f: NoteFont) => void;
   setNoteSize: (s: NoteSize) => void;
   setTextColor: (c: string | undefined) => void;
+  setAiApiKey: (k: string) => void;
+  setAiModel: (m: string) => void;
   setViewMode: (v: ViewMode) => void;
   setSort: (s: SortMode) => void;
   toggleSidebar: () => void;
@@ -181,6 +186,7 @@ export const useStore = create<State>((set, get) => {
     paletteOpen: false,
     securityOpen: false,
     settingsOpen: false,
+    aiOpen: false,
     locked: false,
     securityHeader: null,
 
@@ -405,6 +411,8 @@ export const useStore = create<State>((set, get) => {
     closeSecurity: () => set({ securityOpen: false }),
     openSettings: () => set({ settingsOpen: true }),
     closeSettings: () => set({ settingsOpen: false }),
+    openAi: () => set({ aiOpen: true }),
+    closeAi: () => set({ aiOpen: false }),
 
     unlockVault: async (passphrase) => {
       const res = await loadData();
@@ -600,6 +608,8 @@ export const useStore = create<State>((set, get) => {
     setNoteFont: (f) => commit({ settings: { ...get().settings, noteFont: f } }),
     setNoteSize: (s) => commit({ settings: { ...get().settings, noteSize: s } }),
     setTextColor: (c) => commit({ settings: { ...get().settings, textColor: c } }),
+    setAiApiKey: (k) => commit({ settings: { ...get().settings, aiApiKey: k } }),
+    setAiModel: (m) => commit({ settings: { ...get().settings, aiModel: m } }),
     setViewMode: (v) => commit({ settings: { ...get().settings, viewMode: v } }),
     setSort: (s) => commit({ settings: { ...get().settings, sort: s } }),
     toggleSidebar: () =>

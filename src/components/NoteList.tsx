@@ -10,6 +10,7 @@ import {
   Trash2,
   RotateCcw,
   ArrowDownUp,
+  Sparkles,
 } from "lucide-react";
 import { useStore, computeVisibleNotes } from "../store";
 import { deriveTitle, deriveSnippet } from "../lib/markdown";
@@ -39,6 +40,7 @@ export function NoteList() {
   const restoreNote = useStore((s) => s.restoreNote);
   const deleteForever = useStore((s) => s.deleteForever);
   const emptyTrash = useStore((s) => s.emptyTrash);
+  const openAi = useStore((s) => s.openAi);
 
   const isTrash = filter.type === "trash";
   const notes = useMemo(
@@ -82,10 +84,15 @@ export function NoteList() {
               </button>
             )
           ) : (
-            <button className="btn primary" onClick={() => createNote()} title="New note (Ctrl+N)">
-              <Plus size={15} />
-              New
-            </button>
+            <div className="list-title-actions">
+              <button className="icon-btn" onClick={openAi} title="Notes from image (AI)">
+                <Sparkles size={16} />
+              </button>
+              <button className="btn primary" onClick={() => createNote()} title="New note (Ctrl+N)">
+                <Plus size={15} />
+                New
+              </button>
+            </div>
           )}
         </div>
         <div className="list-controls">

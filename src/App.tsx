@@ -8,6 +8,7 @@ import { UnlockScreen } from "./components/UnlockScreen";
 import { SecurityModal } from "./components/SecurityModal";
 import { UpdateModal } from "./components/UpdateModal";
 import { SettingsModal } from "./components/SettingsModal";
+import { AiModal } from "./components/AiModal";
 import { useUpdater } from "./lib/updater";
 import { initAssets } from "./lib/assets";
 import { DEFAULT_ACCENT, NOTE_FONTS, NOTE_SIZES } from "./types";
@@ -141,6 +142,7 @@ export default function App() {
       <SecurityModal />
       <UpdateModal />
       <SettingsModal />
+      <AiModal />
     </div>
   );
 }

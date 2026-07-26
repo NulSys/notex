@@ -79,6 +79,14 @@ export const TEXT_COLORS: { id: string; label: string; color: string | null }[] 
 export const DEFAULT_NOTE_FONT: NoteFont = "default";
 export const DEFAULT_NOTE_SIZE: NoteSize = "m";
 
+// AI (image → notes) via the Anthropic API, using the user's own API key.
+export const AI_MODELS: { id: string; label: string }[] = [
+  { id: "claude-opus-4-8", label: "Claude Opus 4.8 (best)" },
+  { id: "claude-sonnet-5", label: "Claude Sonnet 5 (balanced)" },
+  { id: "claude-haiku-4-5", label: "Claude Haiku 4.5 (fastest)" },
+];
+export const DEFAULT_AI_MODEL = "claude-opus-4-8";
+
 export interface Note {
   id: string;
   content: string;
@@ -140,6 +148,9 @@ export interface Settings {
   noteFont?: NoteFont;
   noteSize?: NoteSize;
   textColor?: string; // hex; absent = follow theme
+  /** Anthropic API key (bring-your-own) and model for AI features. */
+  aiApiKey?: string;
+  aiModel?: string;
   viewMode: ViewMode;
   sort: SortMode;
   lastNoteId: string | null;

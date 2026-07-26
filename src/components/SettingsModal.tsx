@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Settings2, X, Sun, Moon, MonitorSmartphone, RefreshCw, Check, Palette } from "lucide-react";
+import { Settings2, X, Sun, Moon, MonitorSmartphone, RefreshCw, Check, Palette, Sparkles } from "lucide-react";
 import { getVersion } from "@tauri-apps/api/app";
 import { useStore } from "../store";
 import { useUpdater } from "../lib/updater";
@@ -11,11 +11,13 @@ import {
   NOTE_FONTS,
   NOTE_SIZES,
   TEXT_COLORS,
+  AI_MODELS,
   DEFAULT_ACCENT,
   DEFAULT_DATE_FORMAT,
   DEFAULT_TIME_FORMAT,
   DEFAULT_NOTE_FONT,
   DEFAULT_NOTE_SIZE,
+  DEFAULT_AI_MODEL,
   type DateFormat,
   type TimeFormat,
   type ThemeMode,
@@ -47,6 +49,10 @@ export function SettingsModal() {
   const textColor = useStore((s) => s.settings.textColor);
   const setTextColor = useStore((s) => s.setTextColor);
   const isPresetColor = TEXT_COLORS.some((c) => c.color === (textColor ?? null));
+  const aiApiKey = useStore((s) => s.settings.aiApiKey ?? "");
+  const setAiApiKey = useStore((s) => s.setAiApiKey);
+  const aiModel = useStore((s) => s.settings.aiModel ?? DEFAULT_AI_MODEL);
+  const setAiModel = useStore((s) => s.setAiModel);
 
   const runCheck = useUpdater((s) => s.runCheck);
   const updateStatus = useUpdater((s) => s.status);
@@ -202,6 +208,41 @@ export function SettingsModal() {
                 ))}
               </select>
             </label>
+          </div>
+
+          <div className="settings-section">
+            <div className="settings-label">
+              <Sparkles size={13} style={{ verticalAlign: "-2px", marginRight: 5 }} />
+              AI
+            </div>
+            <label className="field">
+              <span>Anthropic API key</span>
+              <input
+                type="password"
+                value={aiApiKey}
+                onChange={(e) => setAiApiKey(e.target.value)}
+                placeholder="sk-ant-…"
+                spellCheck={false}
+                autoComplete="off"
+              />
+            </label>
+            <label className="row-toggle">
+              <div>
+                <b>Model</b>
+                <small>Used for image-to-notes</small>
+              </div>
+              <select value={aiModel} onChange={(e) => setAiModel(e.target.value)}>
+                {AI_MODELS.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p className="settings-hint">
+              Bring your own key — stored locally, billed to your Anthropic account. Get one at
+              console.anthropic.com. Enable vault encryption (shield icon) to protect it at rest.
+            </p>
           </div>
 
           <div className="settings-section">

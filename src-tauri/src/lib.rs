@@ -1,3 +1,4 @@
+mod ai;
 mod hello;
 
 use tauri::Manager;
@@ -38,7 +39,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             hello::hello_available,
             hello::hello_protect,
-            hello::hello_unprotect
+            hello::hello_unprotect,
+            ai::ai_notes_from_image
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

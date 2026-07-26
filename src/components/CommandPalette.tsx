@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Search, FileText, Plus, SunMoon, PanelLeft, Star, CornerDownLeft, RefreshCw, CalendarDays, LayoutTemplate } from "lucide-react";
+import { Search, FileText, Plus, SunMoon, PanelLeft, Star, CornerDownLeft, RefreshCw, CalendarDays, LayoutTemplate, Sparkles } from "lucide-react";
 import { useStore } from "../store";
 import { useUpdater } from "../lib/updater";
 import { deriveTitle, deriveSnippet } from "../lib/markdown";
@@ -21,6 +21,7 @@ export function CommandPalette() {
   const select = useStore((s) => s.select);
   const createNote = useStore((s) => s.createNote);
   const openDailyNote = useStore((s) => s.openDailyNote);
+  const openAi = useStore((s) => s.openAi);
   const cycleTheme = useStore((s) => s.cycleTheme);
   const toggleSidebar = useStore((s) => s.toggleSidebar);
   const setFilter = useStore((s) => s.setFilter);
@@ -73,6 +74,14 @@ export function CommandPalette() {
         run: () => toggleSidebar(),
       },
       {
+        key: "act:ai",
+        group: "Actions",
+        title: "Notes from image (AI)",
+        sub: "Turn a photo, whiteboard, or document into notes",
+        icon: <Sparkles size={17} />,
+        run: () => openAi(),
+      },
+      {
         key: "act:daily",
         group: "Actions",
         title: "Open today's note",
@@ -123,7 +132,7 @@ export function CommandPalette() {
       }));
 
     return [...matchedActions, ...noteItems];
-  }, [query, notes, createNote, openDailyNote, cycleTheme, toggleSidebar, setFilter, select]);
+  }, [query, notes, createNote, openDailyNote, openAi, cycleTheme, toggleSidebar, setFilter, select]);
 
   useEffect(() => {
     setActive((a) => Math.min(a, Math.max(0, items.length - 1)));
