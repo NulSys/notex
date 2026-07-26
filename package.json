@@ -1,7 +1,7 @@
 {
   "name": "notex",
   "private": true,
-  "version": "0.3.6",
+  "version": "0.3.7",
   "type": "module",
   "description": "NoteX — a modern, sleek markdown note-taking app",
   "scripts": {
