@@ -1681,11 +1681,14 @@ button {
   justify-content: space-between;
   padding: 16px 18px;
   border-bottom: 1px solid var(--border);
-  /* Stay pinned while the modal body scrolls (the .modal is the scroller). */
+  /* Stay pinned while the modal body scrolls (the .modal is the scroller).
+     Frosted (translucent + blur) rather than a flat fill so it blends into the
+     modal's gradient instead of reading as a separate box. */
   position: sticky;
   top: 0;
   z-index: 2;
-  background: var(--elevated);
+  background: color-mix(in srgb, var(--elevated) 55%, transparent);
+  backdrop-filter: blur(18px);
 }
 .modal-title {
   display: flex;
