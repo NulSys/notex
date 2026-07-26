@@ -148,8 +148,13 @@ interface State {
   setNoteFont: (f: NoteFont) => void;
   setNoteSize: (s: NoteSize) => void;
   setTextColor: (c: string | undefined) => void;
+  setAiProvider: (p: string) => void;
   setAiApiKey: (k: string) => void;
   setAiModel: (m: string) => void;
+  setGeminiApiKey: (k: string) => void;
+  setGeminiModel: (m: string) => void;
+  setOllamaModel: (m: string) => void;
+  setOllamaUrl: (u: string) => void;
   setViewMode: (v: ViewMode) => void;
   setSort: (s: SortMode) => void;
   toggleSidebar: () => void;
@@ -608,8 +613,13 @@ export const useStore = create<State>((set, get) => {
     setNoteFont: (f) => commit({ settings: { ...get().settings, noteFont: f } }),
     setNoteSize: (s) => commit({ settings: { ...get().settings, noteSize: s } }),
     setTextColor: (c) => commit({ settings: { ...get().settings, textColor: c } }),
+    setAiProvider: (p) => commit({ settings: { ...get().settings, aiProvider: p as any } }),
     setAiApiKey: (k) => commit({ settings: { ...get().settings, aiApiKey: k } }),
     setAiModel: (m) => commit({ settings: { ...get().settings, aiModel: m } }),
+    setGeminiApiKey: (k) => commit({ settings: { ...get().settings, geminiApiKey: k } }),
+    setGeminiModel: (m) => commit({ settings: { ...get().settings, geminiModel: m } }),
+    setOllamaModel: (m) => commit({ settings: { ...get().settings, ollamaModel: m } }),
+    setOllamaUrl: (u) => commit({ settings: { ...get().settings, ollamaUrl: u } }),
     setViewMode: (v) => commit({ settings: { ...get().settings, viewMode: v } }),
     setSort: (s) => commit({ settings: { ...get().settings, sort: s } }),
     toggleSidebar: () =>

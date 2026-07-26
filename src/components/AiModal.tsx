@@ -2,17 +2,40 @@ import { useEffect, useRef, useState, type ClipboardEvent, type DragEvent } from
 import { Sparkles, X, ImagePlus, Loader2, AlertTriangle, Settings2 } from "lucide-react";
 import { useStore } from "../store";
 import { notesFromImage, imageMediaType } from "../lib/ai";
-import { DEFAULT_AI_MODEL } from "../types";
+import {
+  DEFAULT_AI_MODEL,
+  DEFAULT_AI_PROVIDER,
+  DEFAULT_GEMINI_MODEL,
+  DEFAULT_OLLAMA_MODEL,
+  DEFAULT_OLLAMA_URL,
+} from "../types";
 
 type Img = { bytes: Uint8Array; mediaType: string; url: string; name: string };
 
 export function AiModal() {
   const open = useStore((s) => s.aiOpen);
   const close = useStore((s) => s.closeAi);
-  const apiKey = useStore((s) => s.settings.aiApiKey ?? "");
-  const model = useStore((s) => s.settings.aiModel ?? DEFAULT_AI_MODEL);
+  const settings = useStore((s) => s.settings);
   const createNote = useStore((s) => s.createNote);
   const openSettings = useStore((s) => s.openSettings);
+
+  // Resolve the active provider's config.
+  const provider = settings.aiProvider ?? DEFAULT_AI_PROVIDER;
+  let apiKey = "";
+  let model = "";
+  let baseUrl = "";
+  if (provider === "ollama") {
+    model = settings.ollamaModel || DEFAULT_OLLAMA_MODEL;
+    baseUrl = settings.ollamaUrl || DEFAULT_OLLAMA_URL;
+  } else if (provider === "gemini") {
+    apiKey = settings.geminiApiKey ?? "";
+    model = settings.geminiModel || DEFAULT_GEMINI_MODEL;
+  } else {
+    apiKey = settings.aiApiKey ?? "";
+    model = settings.aiModel || DEFAULT_AI_MODEL;
+  }
+  const needsKey = provider !== "ollama";
+  const ready = !needsKey || !!apiKey;
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -64,8 +87,10 @@ export function AiModal() {
     setError("");
     try {
       const md = await notesFromImage({
+        provider,
         apiKey,
         model,
+        baseUrl,
         bytes: img.bytes,
         mediaType: img.mediaType,
         instruction: instruction.trim() || "Turn this image into clean, well-structured Markdown notes.",
@@ -99,14 +124,15 @@ export function AiModal() {
         </div>
 
         <div className="modal-body">
-          {!apiKey ? (
+          {!ready ? (
             <div className="ai-center">
               <div className="update-badge err">
                 <AlertTriangle size={22} />
               </div>
               <p className="modal-lead">
-                Add your Anthropic API key to use AI features. Your key is stored locally and used
-                only for your own requests.
+                {provider === "gemini"
+                  ? "Add your Google Gemini API key in Settings → AI to use the free tier."
+                  : "Add your Anthropic API key in Settings → AI. Your key is stored locally."}
               </p>
               <button className="btn primary" onClick={goSettings}>
                 <Settings2 size={15} /> Open Settings

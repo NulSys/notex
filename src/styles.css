@@ -2001,9 +2001,19 @@ button {
 /* AI: notes from image */
 .settings-hint {
   font-size: 11.5px;
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--text-faint);
   margin: 8px 0 0;
+}
+.settings-hint code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 1px 5px;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 .list-title-actions {
   display: flex;

@@ -12,12 +12,17 @@ import {
   NOTE_SIZES,
   TEXT_COLORS,
   AI_MODELS,
+  AI_PROVIDERS,
   DEFAULT_ACCENT,
   DEFAULT_DATE_FORMAT,
   DEFAULT_TIME_FORMAT,
   DEFAULT_NOTE_FONT,
   DEFAULT_NOTE_SIZE,
   DEFAULT_AI_MODEL,
+  DEFAULT_AI_PROVIDER,
+  DEFAULT_GEMINI_MODEL,
+  DEFAULT_OLLAMA_MODEL,
+  DEFAULT_OLLAMA_URL,
   type DateFormat,
   type TimeFormat,
   type ThemeMode,
@@ -49,10 +54,20 @@ export function SettingsModal() {
   const textColor = useStore((s) => s.settings.textColor);
   const setTextColor = useStore((s) => s.setTextColor);
   const isPresetColor = TEXT_COLORS.some((c) => c.color === (textColor ?? null));
+  const aiProvider = useStore((s) => s.settings.aiProvider ?? DEFAULT_AI_PROVIDER);
+  const setAiProvider = useStore((s) => s.setAiProvider);
   const aiApiKey = useStore((s) => s.settings.aiApiKey ?? "");
   const setAiApiKey = useStore((s) => s.setAiApiKey);
   const aiModel = useStore((s) => s.settings.aiModel ?? DEFAULT_AI_MODEL);
   const setAiModel = useStore((s) => s.setAiModel);
+  const geminiApiKey = useStore((s) => s.settings.geminiApiKey ?? "");
+  const setGeminiApiKey = useStore((s) => s.setGeminiApiKey);
+  const geminiModel = useStore((s) => s.settings.geminiModel ?? "");
+  const setGeminiModel = useStore((s) => s.setGeminiModel);
+  const ollamaModel = useStore((s) => s.settings.ollamaModel ?? "");
+  const setOllamaModel = useStore((s) => s.setOllamaModel);
+  const ollamaUrl = useStore((s) => s.settings.ollamaUrl ?? "");
+  const setOllamaUrl = useStore((s) => s.setOllamaUrl);
 
   const runCheck = useUpdater((s) => s.runCheck);
   const updateStatus = useUpdater((s) => s.status);
@@ -213,36 +228,112 @@ export function SettingsModal() {
           <div className="settings-section">
             <div className="settings-label">
               <Sparkles size={13} style={{ verticalAlign: "-2px", marginRight: 5 }} />
-              AI
+              AI · Notes from image
             </div>
-            <label className="field">
-              <span>Anthropic API key</span>
-              <input
-                type="password"
-                value={aiApiKey}
-                onChange={(e) => setAiApiKey(e.target.value)}
-                placeholder="sk-ant-…"
-                spellCheck={false}
-                autoComplete="off"
-              />
-            </label>
             <label className="row-toggle">
               <div>
-                <b>Model</b>
-                <small>Used for image-to-notes</small>
+                <b>Provider</b>
+                <small>Where image-to-notes runs</small>
               </div>
-              <select value={aiModel} onChange={(e) => setAiModel(e.target.value)}>
-                {AI_MODELS.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.label}
+              <select value={aiProvider} onChange={(e) => setAiProvider(e.target.value)}>
+                {AI_PROVIDERS.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.label}
                   </option>
                 ))}
               </select>
             </label>
-            <p className="settings-hint">
-              Bring your own key — stored locally, billed to your Anthropic account. Get one at
-              console.anthropic.com. Enable vault encryption (shield icon) to protect it at rest.
-            </p>
+
+            {aiProvider === "anthropic" && (
+              <>
+                <label className="field">
+                  <span>Anthropic API key</span>
+                  <input
+                    type="password"
+                    value={aiApiKey}
+                    onChange={(e) => setAiApiKey(e.target.value)}
+                    placeholder="sk-ant-…"
+                    spellCheck={false}
+                    autoComplete="off"
+                  />
+                </label>
+                <label className="row-toggle">
+                  <div>
+                    <b>Model</b>
+                  </div>
+                  <select value={aiModel} onChange={(e) => setAiModel(e.target.value)}>
+                    {AI_MODELS.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <p className="settings-hint">
+                  Paid — billed to your Anthropic account. Get a key at console.anthropic.com. Best
+                  accuracy, especially on handwriting.
+                </p>
+              </>
+            )}
+
+            {aiProvider === "ollama" && (
+              <>
+                <label className="field">
+                  <span>Model</span>
+                  <input
+                    value={ollamaModel}
+                    onChange={(e) => setOllamaModel(e.target.value)}
+                    placeholder={DEFAULT_OLLAMA_MODEL}
+                    spellCheck={false}
+                  />
+                </label>
+                <label className="field">
+                  <span>Server URL</span>
+                  <input
+                    value={ollamaUrl}
+                    onChange={(e) => setOllamaUrl(e.target.value)}
+                    placeholder={DEFAULT_OLLAMA_URL}
+                    spellCheck={false}
+                  />
+                </label>
+                <p className="settings-hint">
+                  Free &amp; offline. Install Ollama (ollama.com), then pull a vision model:{" "}
+                  <code>ollama pull llama3.2-vision</code> (or <code>llava</code>,{" "}
+                  <code>moondream</code>). No key needed. Quality is lower than Claude and needs a
+                  capable machine.
+                </p>
+              </>
+            )}
+
+            {aiProvider === "gemini" && (
+              <>
+                <label className="field">
+                  <span>Google Gemini API key</span>
+                  <input
+                    type="password"
+                    value={geminiApiKey}
+                    onChange={(e) => setGeminiApiKey(e.target.value)}
+                    placeholder="AIza…"
+                    spellCheck={false}
+                    autoComplete="off"
+                  />
+                </label>
+                <label className="field">
+                  <span>Model</span>
+                  <input
+                    value={geminiModel}
+                    onChange={(e) => setGeminiModel(e.target.value)}
+                    placeholder={DEFAULT_GEMINI_MODEL}
+                    spellCheck={false}
+                  />
+                </label>
+                <p className="settings-hint">
+                  Free tier with daily limits. Get a key at aistudio.google.com. Try{" "}
+                  <code>gemini-1.5-flash</code> or <code>gemini-2.0-flash</code>. Images are sent to
+                  Google.
+                </p>
+              </>
+            )}
           </div>
 
           <div className="settings-section">
