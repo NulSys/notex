@@ -730,6 +730,10 @@ button {
   min-width: 0;
   min-height: 0;
   display: grid;
+  /* Constrain the row to the viewport so the editor/preview panes scroll
+     internally (minmax(0,…) lets them shrink below content height). Without
+     this the CodeMirror scroller never overflows, so it shows no scrollbar. */
+  grid-template-rows: minmax(0, 1fr);
 }
 
 /* Info / outline / backlinks panel */
