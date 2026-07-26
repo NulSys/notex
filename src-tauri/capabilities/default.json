@@ -11,6 +11,8 @@
     "updater:default",
     "process:default",
     "core:window:allow-show",
+    "core:window:allow-set-icon",
+    "core:image:default",
     {
       "identifier": "fs:allow-read-text-file",
       "allow": [{ "path": "$APPDATA/**" }, { "path": "$APPLOCALDATA/**" }, { "path": "$HOME/**" }]

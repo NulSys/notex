@@ -11,7 +11,8 @@ import { SettingsModal } from "./components/SettingsModal";
 import { AiModal } from "./components/AiModal";
 import { useUpdater } from "./lib/updater";
 import { initAssets } from "./lib/assets";
-import { DEFAULT_ACCENT, NOTE_FONTS, NOTE_SIZES } from "./types";
+import { applyAccentIcon } from "./lib/appicon";
+import { ACCENTS, DEFAULT_ACCENT, NOTE_FONTS, NOTE_SIZES } from "./types";
 
 export default function App() {
   const loaded = useStore((s) => s.loaded);
@@ -66,6 +67,9 @@ export default function App() {
   // Apply the chosen accent preset (drives every accent-derived colour in CSS).
   useEffect(() => {
     document.documentElement.setAttribute("data-accent", accent);
+    // Re-tint the running window/taskbar icon to match the accent.
+    const color = ACCENTS.find((a) => a.id === accent)?.color;
+    if (color) applyAccentIcon(color);
   }, [accent]);
 
   // Apply note text preferences (font / size / colour) as CSS variables the
