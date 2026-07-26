@@ -1,6 +1,6 @@
 export type ThemeMode = "light" | "dark" | "system";
 export type ViewMode = "edit" | "split" | "preview";
-export type SortMode = "updated" | "created" | "title";
+export type SortMode = "updated" | "created" | "title" | "manual";
 
 export type AccentId =
   | "violet"
@@ -107,6 +107,8 @@ export interface Note {
   favorite: boolean;
   createdAt: number;
   updatedAt: number;
+  /** Manual sort position (used when sort mode is "manual"). */
+  order?: number;
   /** When soft-deleted (in Trash), the timestamp; null when active. */
   deletedAt: number | null;
   /** Per-note lock. When true, `content` is empty on disk and `cipher` holds the encrypted body. */

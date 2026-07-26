@@ -158,6 +158,7 @@ interface State {
   setOllamaUrl: (u: string) => void;
   setViewMode: (v: ViewMode) => void;
   setSort: (s: SortMode) => void;
+  reorderNotes: (orderedIds: string[]) => void;
   toggleSidebar: () => void;
 }
 
@@ -623,7 +624,27 @@ export const useStore = create<State>((set, get) => {
     setOllamaModel: (m) => commit({ settings: { ...get().settings, ollamaModel: m } }),
     setOllamaUrl: (u) => commit({ settings: { ...get().settings, ollamaUrl: u } }),
     setViewMode: (v) => commit({ settings: { ...get().settings, viewMode: v } }),
-    setSort: (s) => commit({ settings: { ...get().settings, sort: s } }),
+    setSort: (s) => {
+      // Seed manual order from the current recency order the first time, so it
+      // starts in a sensible arrangement before any dragging.
+      if (s === "manual") {
+        const active = get().notes.filter((n) => !n.deletedAt);
+        const ordered = [...active].sort(byRecency);
+        const pos = new Map(ordered.map((n, i) => [n.id, i]));
+        const notes = get().notes.map((n) =>
+          pos.has(n.id) ? { ...n, order: pos.get(n.id)! } : n
+        );
+        commit({ notes, settings: { ...get().settings, sort: s } });
+      } else {
+        commit({ settings: { ...get().settings, sort: s } });
+      }
+    },
+    reorderNotes: (orderedIds) => {
+      const pos = new Map(orderedIds.map((id, i) => [id, i]));
+      commit({
+        notes: get().notes.map((n) => (pos.has(n.id) ? { ...n, order: pos.get(n.id)! } : n)),
+      });
+    },
     toggleSidebar: () =>
       commit({ settings: { ...get().settings, sidebarCollapsed: !get().settings.sidebarCollapsed } }),
   };
@@ -650,6 +671,9 @@ function hydrate(data: AppData): Partial<State> {
 
 function sorter(mode: SortMode): (a: Note, b: Note) => number {
   return (a, b) => {
+    // Manual mode is a pure user-defined order (pinned notes aren't forced up,
+    // so drag has full control); every other mode keeps pinned notes first.
+    if (mode === "manual") return (a.order ?? 0) - (b.order ?? 0);
     if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
     switch (mode) {
       case "created":

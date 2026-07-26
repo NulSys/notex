@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   Search,
   Plus,
@@ -22,6 +22,7 @@ const SORTS: { key: SortMode; label: string }[] = [
   { key: "updated", label: "Last edited" },
   { key: "created", label: "Date created" },
   { key: "title", label: "Title (A–Z)" },
+  { key: "manual", label: "Manual (drag)" },
 ];
 
 export function NoteList() {
@@ -37,6 +38,7 @@ export function NoteList() {
   const toggleSidebar = useStore((s) => s.toggleSidebar);
   const sort = useStore((s) => s.settings.sort);
   const setSort = useStore((s) => s.setSort);
+  const reorderNotes = useStore((s) => s.reorderNotes);
   const restoreNote = useStore((s) => s.restoreNote);
   const deleteForever = useStore((s) => s.deleteForever);
   const emptyTrash = useStore((s) => s.emptyTrash);
@@ -47,6 +49,21 @@ export function NoteList() {
     () => computeVisibleNotes(allNotes, filter, search, sort),
     [allNotes, filter, search, sort]
   );
+
+  // Manual drag-to-reorder (only in Manual sort mode).
+  const manual = sort === "manual" && !isTrash;
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [overId, setOverId] = useState<string | null>(null);
+  const dropOnto = (sourceId: string, targetId: string) => {
+    if (!sourceId || sourceId === targetId) return;
+    const ids = notes.map((n) => n.id);
+    const from = ids.indexOf(sourceId);
+    const to = ids.indexOf(targetId);
+    if (from < 0 || to < 0) return;
+    ids.splice(from, 1);
+    ids.splice(to, 0, sourceId);
+    reorderNotes(ids);
+  };
 
   let heading = "All Notes";
   if (filter.type === "favorites") heading = "Favorites";
@@ -121,7 +138,33 @@ export function NoteList() {
         </div>
       </div>
 
-      <div className="note-scroll">
+      <div
+        className="note-scroll"
+        onDragOver={
+          manual
+            ? (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "move";
+                const card = (e.target as HTMLElement).closest?.(".note-card") as HTMLElement | null;
+                const id = card?.dataset.noteId ?? null;
+                if (id && id !== overId) setOverId(id);
+              }
+            : undefined
+        }
+        onDrop={
+          manual
+            ? (e) => {
+                e.preventDefault();
+                const card = (e.target as HTMLElement).closest?.(".note-card") as HTMLElement | null;
+                const targetId = card?.dataset.noteId;
+                const src = dragId || e.dataTransfer.getData("text/plain");
+                if (src && targetId) dropOnto(src, targetId);
+                setDragId(null);
+                setOverId(null);
+              }
+            : undefined
+        }
+      >
         {notes.length === 0 ? (
           <div className="list-empty">
             {isTrash ? "Trash is empty." : search ? "No matching notes." : "No notes here yet."}
@@ -133,10 +176,35 @@ export function NoteList() {
             const snippet = hidden ? "" : deriveSnippet(n.content);
             const tags = effectiveTags(n);
             return (
-              <button
+              <div
                 key={n.id}
-                className={`note-card${n.id === selectedId ? " active" : ""}`}
+                role="button"
+                tabIndex={0}
+                className={`note-card${n.id === selectedId ? " active" : ""}${
+                  manual ? " draggable" : ""
+                }${dragId === n.id ? " dragging" : ""}${
+                  manual && overId === n.id && dragId !== n.id ? " drag-over" : ""
+                }`}
+                data-note-id={n.id}
                 onClick={() => select(n.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    select(n.id);
+                  }
+                }}
+                draggable={manual}
+                onDragStart={(e) => {
+                  if (!manual) return;
+                  // setData is required or Chromium/WebView2 never fires drop.
+                  e.dataTransfer.setData("text/plain", n.id);
+                  e.dataTransfer.effectAllowed = "move";
+                  setDragId(n.id);
+                }}
+                onDragEnd={() => {
+                  setDragId(null);
+                  setOverId(null);
+                }}
               >
                 <div className="note-card-top">
                   {n.locked && (
@@ -197,7 +265,7 @@ export function NoteList() {
                     </span>
                   )}
                 </div>
-              </button>
+              </div>
             );
           })
         )}

@@ -37,25 +37,24 @@
 :root[data-theme="light"] {
   color-scheme: light;
   --bg: #f4f5f8;
-  /* A single accent wash spanning the whole window: two large overlapping
-     glows (top-right + bottom-left) that meet in the middle for continuous
-     coverage, over a faint diagonal accent tint. */
+  /* Accent gradient concentrated toward the bottom; the top stays the theme
+     background colour, fading into accent lower down. */
   --bg-grad:
     radial-gradient(
-      1500px 1100px at 108% -8%,
-      color-mix(in srgb, var(--accent) 58%, var(--bg)) 0%,
-      transparent 66%
-    ),
-    radial-gradient(
-      1400px 1050px at -12% 112%,
-      color-mix(in srgb, var(--accent) 42%, var(--bg)) 0%,
+      1300px 950px at 110% 105%,
+      color-mix(in srgb, var(--accent) 54%, var(--bg)) 0%,
       transparent 64%
     ),
+    radial-gradient(
+      1200px 900px at -12% 113%,
+      color-mix(in srgb, var(--accent) 40%, var(--bg)) 0%,
+      transparent 62%
+    ),
     linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--accent) 34%, var(--bg)) 0%,
-      color-mix(in srgb, var(--accent) 18%, var(--bg)) 50%,
-      color-mix(in srgb, var(--accent) 30%, var(--bg)) 100%
+      180deg,
+      var(--bg) 0%,
+      var(--bg) 20%,
+      color-mix(in srgb, var(--accent) 23%, var(--bg)) 100%
     );
   --surface: #ffffff;
   --surface-2: #fbfbfd;
@@ -99,20 +98,20 @@
   --bg: #0b0c11;
   --bg-grad:
     radial-gradient(
-      1500px 1100px at 108% -8%,
-      color-mix(in srgb, var(--accent) 82%, var(--bg)) 0%,
-      transparent 68%
+      1300px 950px at 110% 105%,
+      color-mix(in srgb, var(--accent) 74%, var(--bg)) 0%,
+      transparent 64%
     ),
     radial-gradient(
-      1400px 1050px at -12% 112%,
-      color-mix(in srgb, var(--accent) 60%, var(--bg)) 0%,
-      transparent 66%
+      1200px 900px at -12% 113%,
+      color-mix(in srgb, var(--accent) 54%, var(--bg)) 0%,
+      transparent 62%
     ),
     linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--accent) 52%, var(--bg)) 0%,
-      color-mix(in srgb, var(--accent) 32%, var(--bg)) 50%,
-      color-mix(in srgb, var(--accent) 46%, var(--bg)) 100%
+      180deg,
+      var(--bg) 0%,
+      var(--bg) 20%,
+      color-mix(in srgb, var(--accent) 35%, var(--bg)) 100%
     );
   --surface: #14161e;
   --surface-2: #10121a;
@@ -570,6 +569,17 @@ button {
   margin-bottom: 2px;
   transition: background 0.14s var(--ease), border-color 0.14s var(--ease);
   position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+.note-card.draggable {
+  cursor: grab;
+}
+.note-card.dragging {
+  opacity: 0.4;
+}
+.note-card.drag-over {
+  box-shadow: inset 0 2px 0 0 var(--accent);
 }
 .note-card:hover {
   background: var(--surface-hover);
@@ -1668,7 +1678,11 @@ button {
 .modal {
   width: min(520px, 94vw);
   max-height: 86vh;
-  overflow-y: auto;
+  /* Flex column: header stays fixed above a scrolling body (see .modal-body),
+     so the header floats directly on the modal's background with no bar. */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: var(--elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1680,15 +1694,9 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 16px 18px;
-  border-bottom: 1px solid var(--border);
-  /* Stay pinned while the modal body scrolls (the .modal is the scroller).
-     Frosted (translucent + blur) rather than a flat fill so it blends into the
-     modal's gradient instead of reading as a separate box. */
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background: color-mix(in srgb, var(--elevated) 55%, transparent);
-  backdrop-filter: blur(18px);
+  /* Fixed above the scrolling body (flex:none) and fully transparent, so the
+     title and ✕ sit directly on the modal's gradient — no header bar. */
+  flex: none;
 }
 .modal-title {
   display: flex;
@@ -1700,6 +1708,8 @@ button {
 }
 .modal-body {
   padding: 18px;
+  overflow-y: auto;
+  min-height: 0;
 }
 .modal-lead {
   font-size: 13.5px;

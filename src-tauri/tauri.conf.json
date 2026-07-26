@@ -25,6 +25,7 @@
         "titleBarStyle": "Visible",
         "visible": false,
         "backgroundColor": "#0b0c11",
+        "dragDropEnabled": false,
         "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection,CalculateNativeWinOcclusion --disable-backgrounding-occluded-windows --disable-renderer-backgrounding --disable-background-timer-throttling"
       }
     ],
